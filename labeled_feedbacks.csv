@@ -1,0 +1,6 @@
+feedback_id,text,sentiment,confidence,processed_at
+fb_1760620470,Kartla ödəniş problemi yaşadım,negative,0.7422,2025-10-16T17:14:30
+fb_1760620721,Kartla ödəniş problemi yaşadım,negative,0.7422,2025-10-16T17:18:41
+fb_1760620744,Məhsul gözləntilərə uyğundur,neutral,0.5549,2025-10-16T17:19:04
+fb_1760620765,"Heç nə deyə bilmərəm, adi xidmət",negative,0.6235,2025-10-16T17:19:25
+fb_1760620802,Yaxşı idi Təşəkkür edirəm,positive,0.871,2025-10-16T17:20:02
