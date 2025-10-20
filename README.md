@@ -53,6 +53,7 @@ The second bot added enterprise-level features: ML integration, data persistence
 **Previous version:**  
 
 --------------------------------------------------------------------------------------  
+```python  
 agent = create_tool_calling_agent(llm, tools, prompt)  
 agent_with_memory = RunnableWithMessageHistory(  
     agent,  
@@ -63,7 +64,7 @@ agent_with_memory = RunnableWithMessageHistory(
 DEFAULT_SESSION = "feedback_session_hf"  
 agent_with_memory = agent_with_memory.with_config(configurable={"session_id": DEFAULT_SESSION})    
 agent_exe = AgentExecutor(agent=agent_with_memory, tools=tools, verbose=False, callbacks=loggers)  
-
+```   
 --------------------------------------------------------------------------------------  
 
 **Reason:** While the LangChain agent was running, it was writing its intermediate step logs (“AgentActionMessageLog”) to the SQLChatMessageHistory.  
@@ -71,6 +72,7 @@ agent_exe = AgentExecutor(agent=agent_with_memory, tools=tools, verbose=False, c
 **Trying Solving way:** Write-level filter (SafeSQLChatMessageHistory) was implemented using the LangChain core message types to prevent unsupported message types such as AgentActionMessageLog from being written to the database. Later, an enhanced version with a read-level (@property) filter was added to handle any legacy or corrupted records that might still exist in the database, ensuring both safe writing and safe reading of chat history like:  
 
 --------------------------------------------------------------------------------------  
+```python  
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, ToolMessage   
 ALLOWED_MESSAGE_TYPES = {  
     HumanMessage().type, AIMessage().type, SystemMessage().type, ToolMessage().type  
@@ -81,11 +83,12 @@ class SafeSQLChatMessageHistory(SQLChatMessageHistory):
         if mtype not in ALLOWED_MESSAGE_TYPES:  
             return  
         return super().add_message(message)  
-
+```  
 --------------------------------------------------------------------------------------  
 
 
 --------------------------------------------------------------------------------------  
+```python  
 class SafeSQLChatMessageHistory(SQLChatMessageHistory):  
     @property  
     def messages(self):  
@@ -102,12 +105,13 @@ class SafeSQLChatMessageHistory(SQLChatMessageHistory):
             except Exception:  
                 continue  
         return safe  
-
+```  
 --------------------------------------------------------------------------------------  
 
 **Solving way:** I applied RunnableWithMessageHistory to the AgentExecutor, not to the agent.  
 
 --------------------------------------------------------------------------------------  
+```python  
 DEFAULT_SESSION = "feedback_session_hf"  
 agent = create_tool_calling_agent(llm, tools, prompt)  
 agent_exe = AgentExecutor(agent=agent, tools=tools, verbose=False, callbacks=loggers)  
@@ -119,7 +123,7 @@ agent_with_memory = RunnableWithMessageHistory(
     output_messages_key="output"  
 )  
 agent_with_memory = agent_with_memory.with_config(configurable={"session_id": DEFAULT_SESSION})  
-
+```  
 --------------------------------------------------------------------------------------   
 
 
@@ -128,19 +132,21 @@ agent_with_memory = agent_with_memory.with_config(configurable={"session_id": DE
 **Previous version:**   
 
 --------------------------------------------------------------------------------------  
+```python  
 F_MODEL_ID = "LocalDoc/sentiment_analysis_azerbaijani"  
 HF_API_URL = f"https://api-inference.huggingface.co/models/{HF_MODEL_ID}"  
 HF_HEADERS = {"Authorization": f"Bearer {API_KEY2}"}  
-
+```  
 --------------------------------------------------------------------------------------    
 
 **Solving way:** I decided changed llm model  
 
 --------------------------------------------------------------------------------------  
+```python  
 HF_MODEL_ID = "cardiffnlp/twitter-xlm-roberta-base-sentiment"  
 HF_API_URL = f"https://api-inference.huggingface.co/models/{HF_MODEL_ID}"  
 HF_HEADERS = {"Authorization": f"Bearer {API_KEY2}"}  
-
+```  
 --------------------------------------------------------------------------------------  
 
 
