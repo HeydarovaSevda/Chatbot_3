@@ -155,17 +155,19 @@ HF_HEADERS = {"Authorization": f"Bearer {API_KEY2}"}
 **Previous version:**  
 
 --------------------------------------------------------------------------------------  
+```python  
 result = agent_exe.invoke({"input": f"Analyze and save this JSON: {json.dumps(payload, ensure_ascii=False)}"},)  
-
+```  
 --------------------------------------------------------------------------------------  
 
 **Solving way:**  
 
 --------------------------------------------------------------------------------------  
+```python  
 result = agent_with_memory.invoke(  
                 {"input": f"Analyze and save this JSON: {json.dumps(payload, ensure_ascii=False)}"},  
                 config={"callbacks": loggers})  
-
+```  
 --------------------------------------------------------------------------------------  
 
 
@@ -174,6 +176,7 @@ result = agent_with_memory.invoke(
 **Previous version:**  
 
 --------------------------------------------------------------------------------------  
+```python  
 if __name__ == "__main__":  
     print("Customer feedback analyzer. Press q to exit.")   
     while True:  
@@ -197,11 +200,13 @@ if __name__ == "__main__":
         print("\n--- Result (Summary) ---")  
         print(result.get("output", ""))  
         print("------------------------\n")  
+```  
 --------------------------------------------------------------------------------------  
 
 **Solving way:** Added small pause between queries  
 
 --------------------------------------------------------------------------------------  
+```python  
 if __name__ == "__main__":  
     print("Customer feedback analyzer. Press q to exit.")  
     
@@ -232,6 +237,7 @@ if __name__ == "__main__":
             
         except Exception as e:  
             print(f"❌ Error: {e}\n")  
+```  
 --------------------------------------------------------------------------------------  
 
 
@@ -240,6 +246,7 @@ if __name__ == "__main__":
 **Previous version:**  
 
 --------------------------------------------------------------------------------------  
+```python  
 prompt = ChatPromptTemplate.from_messages([  
     ("system",  
     "You are an Azerbaijani-language CX analytics agent.\n"  
@@ -252,12 +259,13 @@ prompt = ChatPromptTemplate.from_messages([
     ("placeholder", "{chat_history}"),  
     ("human", "{input}")  
 ])  
-
+```  
 --------------------------------------------------------------------------------------  
 
 **Solving way:** Added ("placeholder", "{agent_scratchpad}") and change a bit prompt
 
 --------------------------------------------------------------------------------------    
+```python  
 prompt = ChatPromptTemplate.from_messages([  
     ("system",  
     "You are an Azerbaijani-language CX analytics agent.\n"  
@@ -273,7 +281,7 @@ prompt = ChatPromptTemplate.from_messages([
     ("human", "{input}"),  
     ("placeholder", "{agent_scratchpad}")  
 ])  
-
+```  
 --------------------------------------------------------------------------------------  
 
 
@@ -282,6 +290,7 @@ prompt = ChatPromptTemplate.from_messages([
 **Previous version:**  
 
 --------------------------------------------------------------------------------------  
+```python  
 def call_hf_sentiment(text: str, timeout: float = 30.0, retries: int = 2) -> Dict[str, Any]:  
     payload = {"inputs": text, "options": {"wait_for_model": True}}  
     last_err = None  
@@ -307,12 +316,13 @@ def call_hf_sentiment(text: str, timeout: float = 30.0, retries: int = 2) -> Dic
             last_err = {"error": "runtime_error", "detail": str(e)}  
             time.sleep(0.8)  
     return last_err or {"error": "unknown"}    
-
+```  
 --------------------------------------------------------------------------------------  
 
 **Solving way:**  
 
 --------------------------------------------------------------------------------------  
+```python  
 def call_hf_sentiment(text: str, timeout: float = 30.0, retries: int = 2) -> Dict[str, Any]:  
     payload = {"inputs": text, "options": {"wait_for_model": True}}  
     last_err = None  
@@ -351,6 +361,7 @@ def call_hf_sentiment(text: str, timeout: float = 30.0, retries: int = 2) -> Dic
             time.sleep(0.8)  
 
     return last_err or {"error": "unknown"}  
+```  
 --------------------------------------------------------------------------------------  
 
 
@@ -359,6 +370,7 @@ def call_hf_sentiment(text: str, timeout: float = 30.0, retries: int = 2) -> Dic
 **Previous version:**  
 
 --------------------------------------------------------------------------------------  
+```python  
 prompt = ChatPromptTemplate.from_messages([  
     ("system",  
     "You are an Azerbaijani-language CX analytics agent.\n"    
@@ -374,12 +386,13 @@ prompt = ChatPromptTemplate.from_messages([
     ("human", "{input}"),  
     ("placeholder", "{agent_scratchpad}")  
 ])  
-
+```  
 --------------------------------------------------------------------------------------  
 
 **Solving way:** Make prompt more clearly and professionally
 
 --------------------------------------------------------------------------------------  
+```python  
 prompt = ChatPromptTemplate.from_messages([  
     ("system",  
     "You are an Azerbaijani-language CX analytics agent.\n"  
@@ -396,7 +409,7 @@ prompt = ChatPromptTemplate.from_messages([
     ("human", "{input}"),  
     ("placeholder", "{agent_scratchpad}")  
 ])  
-
+```  
 --------------------------------------------------------------------------------------  
 
 
