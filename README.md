@@ -62,7 +62,8 @@ agent_with_memory = RunnableWithMessageHistory(
 
 DEFAULT_SESSION = "feedback_session_hf"  
 agent_with_memory = agent_with_memory.with_config(configurable={"session_id": DEFAULT_SESSION})    
-agent_exe = AgentExecutor(agent=agent_with_memory, tools=tools, verbose=False, callbacks=loggers)    
+agent_exe = AgentExecutor(agent=agent_with_memory, tools=tools, verbose=False, callbacks=loggers)  
+
 --------------------------------------------------------------------------------------  
 
 **Reason:** While the LangChain agent was running, it was writing its intermediate step logs (“AgentActionMessageLog”) to the SQLChatMessageHistory.  
@@ -80,6 +81,7 @@ class SafeSQLChatMessageHistory(SQLChatMessageHistory):
         if mtype not in ALLOWED_MESSAGE_TYPES:  
             return  
         return super().add_message(message)  
+
 --------------------------------------------------------------------------------------  
 
 
@@ -100,9 +102,10 @@ class SafeSQLChatMessageHistory(SQLChatMessageHistory):
             except Exception:  
                 continue  
         return safe  
+
 --------------------------------------------------------------------------------------  
 
-**Solving way:** I applied RunnableWithMessageHistory to the AgentExecutor, not to the agent. 
+**Solving way:** I applied RunnableWithMessageHistory to the AgentExecutor, not to the agent.  
 
 --------------------------------------------------------------------------------------  
 DEFAULT_SESSION = "feedback_session_hf"  
@@ -116,6 +119,7 @@ agent_with_memory = RunnableWithMessageHistory(
     output_messages_key="output"  
 )  
 agent_with_memory = agent_with_memory.with_config(configurable={"session_id": DEFAULT_SESSION})  
+
 --------------------------------------------------------------------------------------   
 
 
@@ -127,6 +131,7 @@ agent_with_memory = agent_with_memory.with_config(configurable={"session_id": DE
 F_MODEL_ID = "LocalDoc/sentiment_analysis_azerbaijani"  
 HF_API_URL = f"https://api-inference.huggingface.co/models/{HF_MODEL_ID}"  
 HF_HEADERS = {"Authorization": f"Bearer {API_KEY2}"}  
+
 --------------------------------------------------------------------------------------    
 
 **Solving way:** I decided changed llm model  
@@ -134,7 +139,8 @@ HF_HEADERS = {"Authorization": f"Bearer {API_KEY2}"}
 --------------------------------------------------------------------------------------  
 HF_MODEL_ID = "cardiffnlp/twitter-xlm-roberta-base-sentiment"  
 HF_API_URL = f"https://api-inference.huggingface.co/models/{HF_MODEL_ID}"  
-HF_HEADERS = {"Authorization": f"Bearer {API_KEY2}"}    
+HF_HEADERS = {"Authorization": f"Bearer {API_KEY2}"}  
+
 --------------------------------------------------------------------------------------  
 
 
@@ -144,6 +150,7 @@ HF_HEADERS = {"Authorization": f"Bearer {API_KEY2}"}
 
 --------------------------------------------------------------------------------------  
 result = agent_exe.invoke({"input": f"Analyze and save this JSON: {json.dumps(payload, ensure_ascii=False)}"},)  
+
 --------------------------------------------------------------------------------------  
 
 **Solving way:**  
@@ -152,6 +159,7 @@ result = agent_exe.invoke({"input": f"Analyze and save this JSON: {json.dumps(pa
 result = agent_with_memory.invoke(  
                 {"input": f"Analyze and save this JSON: {json.dumps(payload, ensure_ascii=False)}"},  
                 config={"callbacks": loggers})  
+
 --------------------------------------------------------------------------------------  
 
 
@@ -238,6 +246,7 @@ prompt = ChatPromptTemplate.from_messages([
     ("placeholder", "{chat_history}"),  
     ("human", "{input}")  
 ])  
+
 --------------------------------------------------------------------------------------  
 
 **Solving way:** Added ("placeholder", "{agent_scratchpad}") and change a bit prompt
@@ -258,6 +267,7 @@ prompt = ChatPromptTemplate.from_messages([
     ("human", "{input}"),  
     ("placeholder", "{agent_scratchpad}")  
 ])  
+
 --------------------------------------------------------------------------------------  
 
 
@@ -291,6 +301,7 @@ def call_hf_sentiment(text: str, timeout: float = 30.0, retries: int = 2) -> Dic
             last_err = {"error": "runtime_error", "detail": str(e)}  
             time.sleep(0.8)  
     return last_err or {"error": "unknown"}    
+    
 --------------------------------------------------------------------------------------  
 
 **Solving way:**  
@@ -357,6 +368,7 @@ prompt = ChatPromptTemplate.from_messages([
     ("human", "{input}"),  
     ("placeholder", "{agent_scratchpad}")  
 ])  
+
 --------------------------------------------------------------------------------------  
 
 **Solving way:** Make prompt more clearly and professionally
@@ -378,6 +390,7 @@ prompt = ChatPromptTemplate.from_messages([
     ("human", "{input}"),  
     ("placeholder", "{agent_scratchpad}")  
 ])  
+
 --------------------------------------------------------------------------------------  
 
 
