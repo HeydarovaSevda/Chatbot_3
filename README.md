@@ -301,7 +301,7 @@ def call_hf_sentiment(text: str, timeout: float = 30.0, retries: int = 2) -> Dic
             last_err = {"error": "runtime_error", "detail": str(e)}  
             time.sleep(0.8)  
     return last_err or {"error": "unknown"}    
-    
+
 --------------------------------------------------------------------------------------  
 
 **Solving way:**  
